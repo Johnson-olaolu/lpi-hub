@@ -16,12 +16,29 @@ export const UserSchema  = new mongoose.Schema({
     userName : {
         type : String, 
         required : true
+    }, 
+    email : {
+        type : String ,
+        required : true
+    },
+    role : {
+        type : String,
+        required : false,
+        default : "Student"
+    },
+    currentPlan : {
+        type : String,
+        required : true ,
+        default : "basic"
     }
 })
 
 export interface UserModel {
-    firstName : string,
-    lastName : string,
-    password : string,
-    userName : string,
+    firstName : string;
+    lastName : string;
+    password : string;
+    userName : string;
+    email : string;
+    role : string;
+    currentPlan : string;
 }

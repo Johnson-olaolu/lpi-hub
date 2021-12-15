@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { CreateUserDto } from './user.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -15,18 +16,8 @@ export class UserController {
   // desc: add new student
   // route :POST  api/student
   @Post()
-  async addNewStudent(
-    @Body('firstName') firstName: string,
-    @Body('lastName') lastName: string,
-    @Body('userName') userName: string,
-    @Body('password') password: string,
-  ) {
-    return await this.userService.addUser(
-      firstName,
-      lastName,
-      userName,
-      password,
-    );
+  async addNewStudent(@Body() CreateUserDto : CreateUserDto ) {
+    return await this.userService.addUser(CreateUserDto );
   }
 
   // desc: update student

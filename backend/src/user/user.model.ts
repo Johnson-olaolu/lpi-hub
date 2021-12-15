@@ -30,6 +30,10 @@ export const UserSchema  = new mongoose.Schema({
         type : String,
         required : true ,
         default : "basic"
+    },
+    timeUsed : {
+        type : String,
+        required : true,
     }
 })
 
@@ -41,4 +45,5 @@ export interface UserModel {
     email : string;
     role : string;
     currentPlan : string;
+    timeUsed : string;
 }

@@ -1,33 +1,32 @@
 import { Injectable } from "@nestjs/common";
+import { Command } from "nestjs-command";
+import { CreateUserDto } from "./user.dto";
+import { UserService } from "./user.service";
 
-const users =  [
-    {"name": "admin"},
-    {"name": "user"}
+const seedUsers = [
+    {
+        firstName: "Super",
+        lastName: "Admin",
+        password: "lpihub",
+        userName: "super-admin",
+        email: "superadmin@lpihub.com",
+        phoneNum: "07053332295" , 
+        role: "superAdmin",
+        currentPlan: "Premium",
+        timeUsed: new Date(new Date().getTime())
+    }
 ]
+@Injectable()
+export class UserSeeder  {
+    constructor(private readonly userService: UserService) { }
 
-//@Injectable()
-//export class 
+    @Command({ command: 'seed:user', describe: "seed super admin" })
+    async seedAdmin() {
+        console.log(seedUsers)
+        for (const  user of seedUsers) {
+            const seededUser  = await this.userService.seedUser(user)
+            console.log(seededUser)
+        }
+    }
 
-// import { Command, Positional } from 'nestjs-command';
-// import { Injectable } from '@nestjs/common';
-// import { RoleService } from '../role.service';
-// import Roles from './roles.json';
-// import { CreateRoleDto } from '../dto/role.dto';
-
-// @Injectable()
-// export class RoleSeed {
-//   constructor(private readonly roleService: RoleService) {}
-
-//   @Command({
-//     command: 'seed:roles',
-//     describe: 'create default roles',
-//     autoExit: true,
-//   })
-//   async create() {
-//     console.log(Roles);
-//     for (let role of Roles) {
-//       const result = await this.roleService.seedRoles(role);
-//       console.log(result);
-//     }
-//   }
-// }
+}

@@ -1,16 +1,5 @@
-import { IsString, IsNumber, IsOptional  } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsDate  } from 'class-validator';
 
-
-export interface UserModel {
-    firstName : string;
-    lastName : string;
-    password : string;
-    userName : string;
-    email : string;
-    role : string;
-    currentPlan : string;
-    timeUsed : string;
-}
 
 export class CreateUserDto {
     @IsString() firstName : string ;
@@ -18,10 +7,30 @@ export class CreateUserDto {
     @IsString() password : string;
     @IsString() userName: string;
     @IsString() email : string ;
+    @IsString() phoneNum : string;
     @IsString() role : string ;
     @IsString() currentPlan : string ;
-    @IsString() timeUsed : string;
+    @IsDate() timeUsed : Date;
 }
+
+
+export class UpdateUserDto {
+    @IsString() @IsOptional() first_name: string;
+    @IsString() @IsOptional() last_name: string;
+    @IsString() @IsOptional() username: string;
+    @IsString() @IsOptional() phone: string;
+    @IsString() @IsOptional() email: string;
+    @IsString() @IsOptional() password: string;
+}
+
+export class GetUserDto {
+    @IsString() @IsOptional() username: string;
+    @IsString() @IsOptional() phone: string;
+    @IsString() @IsOptional() email: string;
+}
+
+
+
 
 // export class CreateUserDto {
 //     @IsString() first_name: string;
@@ -33,8 +42,4 @@ export class CreateUserDto {
 //     @IsString() @IsOptional() role: string;
 // }
 
-// export class GetUserDto {
-//     @IsString() @IsOptional() username: string;
-//     @IsString() @IsOptional() phone: string;
-//     @IsString() @IsOptional() email: string;
-// }
+

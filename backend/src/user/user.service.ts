@@ -2,25 +2,34 @@ import * as bcrypt from 'bcryptjs'
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateUserDto } from './user.dto';
+import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { UserModel } from './user.model';
+import { RoleModel } from 'src/role/role.model';
 
 @Injectable()
 export class UserService {
-	constructor(@InjectModel('User') private readonly User: Model<UserModel>) { }
+	constructor(
+		@InjectModel('User') private readonly User: Model<UserModel>,
+		@InjectModel('Role') private readonly Role: Model<RoleModel>
+	) { }
 
-	async addUser(CreateUserDto: CreateUserDto) {
-		const { firstName, lastName, password, email, currentPlan, role, timeUsed, userName } = CreateUserDto
-
+	async addUser(CreateUserDto: CreateUserDto) : Promise<UserModel> {
+		const { firstName, lastName, password, email, currentPlan, timeUsed, phoneNum, userName } = CreateUserDto
+		const fname = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+		const lname = lastName.charAt(0).toUpperCase() + lastName.slice(1);
+		const pass = bcrypt.hashSync(password, 10);
+		const phone = '+234' + phoneNum.slice(1);
+		const role = await this.Role.findOne({name : "user"})
 		const newUser = await this.User.create({
-			firstName: firstName,
-			lastName: lastName,
-			password: password,
+			firstName: fname,
+			lastName: lname,
+			password: pass,
 			email: email,
 			currentPlan: currentPlan,
-			role: role,
 			timeUsed: timeUsed,
-			userName: userName
+			userName: userName,
+			phoneNum : phone,
+			role : role._id
 		})
 
 		if (!newUser) {
@@ -30,29 +39,118 @@ export class UserService {
 			)
 		}
 
-		return newUser as UserModel;
+		return newUser 
 	}
 
-	async getAllUsers() {
-		const users = await this.User.find();
-		return users as UserModel[];
+	async getAllUsers() : Promise<UserModel[]> {
+		const role = await this.Role.findOne({name : "user"})
+		const users = await this.User.find({role : role._id});
+		return users  
 	}
 
+	async getUser( id: string) : Promise <UserModel> {
+		const user = await this.User.findById(id)
+		return user 
+	}
 
-
-	async updateUser(id: string, firstName: string, lastName: string, userName: string, password: string) {
+	async updateUser(id: string, UpdateUserDto : UpdateUserDto) : Promise <UserModel> {
+		const {firstName, lastName, userName , password, email, phoneNum} = UpdateUserDto
+		const fname = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+		const lname = lastName.charAt(0).toUpperCase() + lastName.slice(1);
+		const pass = bcrypt.hashSync(password, 10);
+		const phone = '+234' + phoneNum.slice(1);
 		const user = await this.User.findByIdAndUpdate(id, {
-			firstName: firstName,
-			lastName: lastName,
+			firstName: fname,
+			lastName: lname,
 			userName: userName,
-			password: password
+			password: pass,
+			email : email,
+			phoneNum :phone
 		})
 
 		return user;
 	}
 
+	async deleteUser(id:string) {
+		try {
+			await this.User.findByIdAndDelete(id)
+		} catch (error) {
+			throw new HttpException({success: "false" , message : "could not delete User"}, 500)
+		}
+	} 
+
+	async addAdmin (CreateUserDto : CreateUserDto) : Promise <UserModel> {
+		const { firstName, lastName, password, email, currentPlan, timeUsed, phoneNum, userName } = CreateUserDto
+		const fname = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+		const lname = lastName.charAt(0).toUpperCase() + lastName.slice(1);
+		const pass = bcrypt.hashSync(password, 10);
+		const phone = '+234' + phoneNum.slice(1);
+		const role = await this.Role.findOne({name : "admin"})
+		const newAdmin = await this.User.create({
+			firstName: fname,
+			lastName: lname,
+			password: pass,
+			email: email,
+			role : role._id, 
+			currentPlan: currentPlan,
+			timeUsed: timeUsed,
+			userName: userName,
+			phoneNum : phone
+		})
+
+		if (!newAdmin) {
+			throw new HttpException(
+				{ success: false, message: "user not created" },
+				404
+			)
+		}
+
+		return newAdmin
+	}
+
+	async getAllAdmin () : Promise <UserModel[]> {
+		const role = await this.Role.findOne({name : "admin"})
+		const admins = await this.User.find({role : role._id})
+		return admins 
+	}
+
+	async getAdmin (id : string): Promise<UserModel> {
+		const role = await this.Role.findOne({name : "admin"})
+		const admin = await this.User.findOne({id : id , role : role._id})
+		if(!admin) {
+			throw new HttpException({success: "false" , message : "could not get admin"}, 404)
+		}
+		return admin
+	}
+
+	async updateAdmin(id : string , UpdateUserDto : UpdateUserDto) : Promise<UserModel> {
+		const {firstName, lastName, userName , password, email, phoneNum} = UpdateUserDto
+		const fname = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+		const lname = lastName.charAt(0).toUpperCase() + lastName.slice(1);
+		const pass = bcrypt.hashSync(password, 10);
+		const phone = '+234' + phoneNum.slice(1);
+		const admin = await this.User.findByIdAndUpdate(id, {
+			firstName: fname,
+			lastName: lname,
+			userName: userName,
+			password: pass,
+			email : email,
+			phoneNum :phone
+		})
+
+		return admin;
+	}
+
+	async deleteAdmin (id : string) {
+		try {
+			await this.User.findByIdAndDelete(id)
+		} catch (error) {
+			throw new HttpException({success: "false" , message : "could not delete admin"}, 500)
+		}
+	}
+
 	async seedUser(CreateUserDto: CreateUserDto) {
-		const { firstName, lastName, password, email, phoneNum, currentPlan, role, timeUsed, userName } = CreateUserDto
+		const { firstName, lastName, password, email, phoneNum, currentPlan, timeUsed, userName } = CreateUserDto
 		const fname = firstName.charAt(0).toUpperCase() + firstName.slice(1);
 		const lname = lastName.charAt(0).toUpperCase() + lastName.slice(1);
 		const pass = bcrypt.hashSync(password, 10);
@@ -65,7 +163,7 @@ export class UserService {
 				email: email,
 				phoneNum : phone,
 				currentPlan: currentPlan,
-				role: role,
+				role: "superAdmin",
 				timeUsed: timeUsed,
 				userName: userName
 			})

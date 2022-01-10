@@ -48,4 +48,17 @@ export class PaymentPlansService {
         }
         return updatedPaymentPlan;
     }
+
+
+    async seedPaymentPlan(AddPaymentPlanDto : AddPaymentPlanDto ) : Promise<PaymentPlansModel> {
+        const { name, price, description, time} = AddPaymentPlanDto
+
+        const newPaymentPlan = await this.PaymentPlan.create({
+            name : name,
+            price : price,
+            description : description,
+            time : time
+        })
+        return newPaymentPlan
+    }
 }

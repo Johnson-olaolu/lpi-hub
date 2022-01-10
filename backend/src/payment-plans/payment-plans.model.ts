@@ -16,6 +16,11 @@ export const PaymentPlansSchema = new mongoose.Schema({
     time : {
         type : Date,
         required : true
+    },
+    users : {
+        type: Number,
+        required : true,
+        default : 1
     }
 })
 
@@ -24,6 +29,7 @@ export interface PaymentPlansModel extends mongoose.Document {
     _id : string;
     name : string;
     price : number;
+    users : number;
     description : string;
     time : Date; 
 }

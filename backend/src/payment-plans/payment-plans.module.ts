@@ -7,6 +7,7 @@ import { PaymentPlansSchema } from './payment-plans.model';
 @Module({
   imports : [MongooseModule.forFeature([{name : "PaymentPlan" , schema : PaymentPlansSchema}])],
   providers: [PaymentPlansService],
-  controllers: [PaymentPlansController]
+  controllers: [PaymentPlansController],
+  exports : [PaymentPlansService]
 })
 export class PaymentPlansModule {}

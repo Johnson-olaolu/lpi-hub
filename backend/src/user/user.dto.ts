@@ -8,17 +8,16 @@ export class CreateUserDto {
     @IsString() userName: string;
     @IsString() email : string ;
     @IsString() phoneNum : string;
-    @IsString() role : string ;
     @IsString() currentPlan : string ;
     @IsDate() timeUsed : Date;
 }
 
 
 export class UpdateUserDto {
-    @IsString() @IsOptional() first_name: string;
-    @IsString() @IsOptional() last_name: string;
-    @IsString() @IsOptional() username: string;
-    @IsString() @IsOptional() phone: string;
+    @IsString() @IsOptional() firstName: string;
+    @IsString() @IsOptional() lastName: string;
+    @IsString() @IsOptional() userName: string;
+    @IsString() @IsOptional() phoneNum: string;
     @IsString() @IsOptional() email: string;
     @IsString() @IsOptional() password: string;
 }

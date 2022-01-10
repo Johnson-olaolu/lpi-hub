@@ -26,8 +26,9 @@ export const UserSchema = new mongoose.Schema({
         required : true
     },
     role: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Role"
+        type : mongoose.Schema.Types.ObjectId, 
+        required : true,
+        ref : "Role"
     },
     currentPlan: {
         type: mongoose.Schema.Types.ObjectId,
@@ -41,17 +42,17 @@ export const UserSchema = new mongoose.Schema({
 )
 
 
-UserSchema.method('toJSON', function () {
-    const { __v, _id, ...object } = this.toObject();
-    const newObject = {
-      id: _id,
-      ...object,
-    };
-    return newObject;
-  });
+// UserSchema.method('toJSON', function () {
+//     const { __v, _id, ...object } = this.toObject();
+//     const newObject = {
+//       id: _id,
+//       ...object,
+//     };
+//     return newObject;
+//   });
 
 export class UserModel extends mongoose.Document {
-    readonly id: string;
+    readonly _id: string;
     readonly firstName: string;
     readonly lastName: string;
     readonly userName: string;

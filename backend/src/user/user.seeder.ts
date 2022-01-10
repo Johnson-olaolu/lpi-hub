@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { Command } from "nestjs-command";
-import { CreateUserDto } from "./user.dto";
 import { UserService } from "./user.service";
 
 const seedUsers = [
@@ -22,7 +21,6 @@ export class UserSeeder  {
 
     @Command({ command: 'seed:user', describe: "seed super admin" })
     async seedAdmin() {
-        console.log(seedUsers)
         for (const  user of seedUsers) {
             const seededUser  = await this.userService.seedUser(user)
             console.log(seededUser)
